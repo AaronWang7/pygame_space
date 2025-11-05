@@ -31,9 +31,28 @@ score_front = pygame.font.Font('freesansbold.ttf', 32)
 
 
 game_over_front = pygame.font.Font('freesansbold.ttf', 64)
-game_over_display = game_over_front.render(
-    "GAME OVER", True, (255, 0, 0))
+game_over_display = game_over_front.render("GAME OVER", True, (255, 0, 0))
 screen.blit(game_over_display, (250, 25))
+
+game_over = True
+
+
+class Button:
+    def __init__(self, x, y, img, scale):
+        self.x = x
+        self.y = y
+        self.img = pygame.image.load(img)
+        self.img = pygame.transform(
+            self.img, (int(img.get_width()*scale, int(img.get_hight()*scale))))
+        self.scale = scale
+        self.rect = self.img.get_rect()
+
+    def draw(self):
+        pos = pygame.mouse.get_pos()
+        print(pos)
+        if self.rect.collidepoint(pos):
+            print("Hover")
+        screen.blit(self.img, (self.x, self.y))
 
 
 class Bullet:
@@ -84,7 +103,8 @@ class Enemy:
         self.x = x
         self.y = y
         self.x_change = 50
-        self.y_change = 7
+        self.y_change = 70
+        self.game_over = False
 
     def enemy_set(self):
         screen.blit(self.img, (self.x, self.y))
@@ -112,8 +132,8 @@ class Enemy:
         distance = math.sqrt((self.x - player.x) ** 2 +
                              (self.y - player.y) ** 2)
         if distance < 48:
-            return True
-        return False
+            game_over = True
+        game_over = False
 
 
 enemies = []
@@ -178,12 +198,13 @@ while running:
                     enemies.append(Enemy(x, y))
 
     for enemy in enemies:
-        if enemy.lose(player):
+        if game_over == True:
+            screen.blit(game_over_display, (300, 300))
             enemies = []
-            game_over = True
+            restart_front = score_front.render(
+                "Click to restart", True, (255, 255, 255))
+            # use img instead of text
 
-        if game_over:
-            screen.blit(game_over_display, (250, 250))
             break
 
     bullet.move()
@@ -197,5 +218,3 @@ while running:
         bullet.shoot()
 
     pygame.display.flip()
-
-# why isn't the spaceship showing up? because we didn't call the player_set method, where to call it? inside the game loop
