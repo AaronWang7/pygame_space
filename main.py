@@ -34,7 +34,7 @@ game_over_front = pygame.font.Font('freesansbold.ttf', 64)
 game_over_display = game_over_front.render("GAME OVER", True, (255, 0, 0))
 screen.blit(game_over_display, (250, 25))
 
-game_over = True
+game_over = False
 
 
 class Button:
@@ -51,7 +51,7 @@ class Button:
         pos = pygame.mouse.get_pos()
         print(pos)
         if self.rect.collidepoint(pos):
-            print("Hover")
+            print(pos)
         screen.blit(self.img, (self.x, self.y))
 
 
@@ -113,10 +113,10 @@ class Enemy:
         self.x += self.x_change
         # boundary checking
         if self.x <= 0:
-            self.x_change = 0.1
+            self.x_change = 0.05
             self.y += self.y_change
         elif self.x >= WIDTH - 64:  # assuming enemy width is 64
-            self.x_change = -0.1
+            self.x_change = -0.05
             self.y += self.y_change
         elif self.y >= HEIGHT - 64:
             self.y = 0
@@ -137,15 +137,15 @@ class Enemy:
 
 
 enemies = []
+
 player = Player(368, 520)
-x = random.randint(0, WIDTH - 64)
-y = random.randint(0, 300 - 64)
-enemy = Enemy(x, y)
 bullet = Bullet()
-for i in range(6):
-    x = random.randint(0, WIDTH - 64)
-    y = random.randint(0, 400 - 64)
-    enemies.append(Enemy(x, y))
+for i in range(3):
+    xx = random.randint(0, 300)
+    yy = random.randint(0, 400)
+    enemies.append(Enemy(xx, yy))
+    enemy = Enemy(xx, yy)
+    print(xx, yy)
 
 
 running = True
